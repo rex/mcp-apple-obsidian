@@ -6,17 +6,21 @@ This is a comprehensive MCP server for Obsidian on macOS that provides:
 - File system access to vaults and notes
 - AppleScript integration for app control
 - URI scheme support for native Obsidian actions
+- Frontmatter/properties CRUD operations
+- Tag management across notes and vaults
+- Task management with Obsidian-compatible syntax
 
 ## Architecture
 
 ```
 src/mcp_apple_obsidian/
 ├── __init__.py      # Package entry point
-├── server.py        # FastMCP server with all tools
+├── server.py        # FastMCP server with 42 tools
 ├── config.py        # Configuration management
 ├── applescript.py   # AppleScript interface
 ├── uri_handler.py   # Obsidian URI scheme handler
 └── vault_fs.py      # File system operations for vaults
+                    # + Frontmatter/Tag/Task operations
 ```
 
 ## Key Design Principles
@@ -26,6 +30,9 @@ src/mcp_apple_obsidian/
 3. **Async Everything**: All I/O operations are async for performance
 4. **Graceful Degradation**: Works even when Obsidian isn't running
 5. **No stdout pollution**: Use stderr for logging (critical for stdio transport)
+6. **YAML-aware**: Frontmatter uses YAML for type preservation
+7. **Tag Flexibility**: Supports both inline (#tag) and frontmatter tags
+8. **Task Compatibility**: Tasks use Obsidian-compatible syntax
 
 ## Adding New Tools
 
@@ -59,6 +66,63 @@ async def my_new_tool(vault: str, param: str) -> str:
         return f"Error: {e}"
 ```
 
+## Frontmatter / Properties
+
+Frontmatter is parsed using PyYAML for proper type handling:
+
+```yaml
+---
+title: Note Title
+created: 2024-01-15
+tags:
+  - tag1
+  - tag2
+priority: high
+completed: true
+score: 42
+---
+```
+
+Key functions in `vault_fs.py`:
+- `_parse_frontmatter()` - Extracts frontmatter and body
+- `_serialize_note()` - Combines frontmatter and body
+- `get_frontmatter()` - Get properties as dict
+- `set_frontmatter()` - Update properties
+- `search_by_property()` - Query by property values
+
+## Tag Management
+
+Tags can exist in two places:
+1. **Frontmatter**: `tags: [tag1, tag2]` or `tags: tag1 tag2`
+2. **Inline**: `#tag` anywhere in the note body
+
+The server handles both transparently:
+- `get_note_tags()` - Returns unique tags from both sources
+- `add_tag_to_note()` - Adds to frontmatter by default
+- `remove_tag_from_note()` - Removes from both locations
+- `rename_tag_*()` - Renames in both locations
+
+Tag format supports nesting: `#project/active`
+
+## Task Management
+
+Tasks follow Obsidian's task plugin syntax:
+
+```markdown
+- [ ] Plain task
+- [x] Completed task
+- [ ] Task with due date 📅 2024-12-25
+- [ ] High priority 🔼
+- [ ] Low priority 🔽
+- [ ] Task with #tag
+- [ ] Task with multiple #tags 📅 2024-01-01 🔼
+```
+
+Task parsing in `vault_fs.py`:
+- `_parse_tasks()` - Extracts tasks from content
+- `Task` class - Represents a task with metadata
+- `_task_to_line()` - Serializes task back to markdown
+
 ## Testing
 
 The server can be tested using the MCP inspector:
@@ -71,6 +135,11 @@ Or test individual modules:
 
 ```bash
 python -c "from mcp_apple_obsidian.vault_fs import list_vaults; print(list_vaults())"
+```
+
+Run all tests:
+```bash
+uv run pytest
 ```
 
 ## Environment Setup
@@ -98,6 +167,24 @@ Required environment for development:
 2. Add execution wrapper if needed
 3. Add tool in `server.py`
 
+### Adding frontmatter operations
+1. Use `_parse_frontmatter()` and `_serialize_note()` helpers
+2. Handle YAML parsing errors gracefully
+3. Preserve existing frontmatter structure
+4. Add both individual and batch operations
+
+### Adding tag operations
+1. Update both frontmatter and inline tags where appropriate
+2. Use regex patterns from `TAG_PATTERN`
+3. Maintain tag uniqueness
+4. Support nested tags (parent/child)
+
+### Adding task operations
+1. Use `_parse_tasks()` to find existing tasks
+2. Use `Task` class for manipulation
+3. Use `_task_to_line()` for serialization
+4. Support Obsidian's emoji-based metadata
+
 ## Configuration
 
 All configuration is in `config.py`. Environment variables are the primary configuration method.
@@ -118,3 +205,7 @@ Potential areas for expansion:
 - Workspace management
 - Canvas file support
 - Sync status checking
+- Dataview query support
+- Periodic notes support
+- Canvas file operations
+- Excalidraw integration

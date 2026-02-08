@@ -17,10 +17,34 @@ A comprehensive Model Context Protocol (MCP) server for Obsidian on macOS. This 
 - **List notes**: Browse notes with filtering by folder and file type
 - **Note metadata**: Extract tags, links, frontmatter, and word counts
 
+### Frontmatter / Properties
+- **Read properties**: Get all frontmatter properties from a note
+- **Set property**: Add or update a single property
+- **Set multiple properties**: Batch update frontmatter
+- **Delete property**: Remove a property from frontmatter
+- **Search by property**: Find notes matching property values (equals, contains, gt, lt, exists)
+
+### Tag Management
+- **Get note tags**: List all tags in a note (inline + frontmatter)
+- **Add tag**: Add a tag to a note
+- **Remove tag**: Remove a tag from a note
+- **Rename tag**: Rename a tag within a note or across the entire vault
+- **Get all tags**: List all unique tags with occurrence counts
+
+### Task Management
+- **Get tasks**: List all tasks from a note with metadata (due dates, priority, tags)
+- **Add task**: Create new tasks with optional due dates, priority, and tags
+- **Complete task**: Mark tasks as done
+- **Uncomplete task**: Mark completed tasks as incomplete
+- **Update task**: Modify task description, due date, or priority
+- **Delete task**: Remove tasks from notes
+- **Search tasks**: Find tasks across vault by status, due date, tag, or description
+
 ### Search & Discovery
 - **Full-text search**: Search note content with regex support
 - **Tag search**: Find notes by specific tags
 - **Backlink discovery**: Find all notes linking to a specific note
+- **Property search**: Find notes by frontmatter properties
 - **Folder browsing**: Navigate vault structure
 
 ### Obsidian Application Control
@@ -101,136 +125,167 @@ Or for local development:
 }
 ```
 
-## Available Tools
+## Available Tools (42 Total)
 
-### Vault Tools
+### Vault Tools (3)
 
-#### `list_vaults`
-List all known Obsidian vaults on your Mac.
+| Tool | Description |
+|------|-------------|
+| `list_vaults` | List all known Obsidian vaults |
+| `get_vault_info` | Get detailed vault information |
+| `get_vault_stats` | Get comprehensive vault statistics |
 
-#### `get_vault_info`
-Get detailed information about a specific vault including note count, folders, and size.
+### Note Reading Tools (3)
 
-#### `get_vault_stats`
-Get comprehensive statistics about a vault including tag usage and link analysis.
+| Tool | Description |
+|------|-------------|
+| `read_note` | Read note content |
+| `list_notes` | List notes in a vault/folder |
+| `get_note_metadata` | Get tags, links, frontmatter, word count |
 
-### Note Reading Tools
+### Note Writing Tools (6)
 
-#### `read_note`
-Read the full content of a note.
+| Tool | Description |
+|------|-------------|
+| `write_note` | Create or overwrite notes |
+| `create_note_with_template` | Create structured notes with frontmatter |
+| `delete_note` | Delete notes with backup |
+| `move_note` | Move/rename notes |
+| `append_to_note` | Append content to notes |
+| `prepend_to_note` | Prepend content to notes |
 
-**Parameters:**
-- `vault`: Name or path of the vault
-- `path`: Path to the note within the vault
+### Frontmatter/Property Tools (5)
 
-#### `list_notes`
-List all notes in a vault or folder.
+| Tool | Description |
+|------|-------------|
+| `get_note_properties` | Get all frontmatter properties |
+| `set_note_property` | Set a single property |
+| `set_multiple_properties` | Batch update properties (JSON) |
+| `delete_note_property` | Remove a property |
+| `search_by_property` | Search notes by property value |
 
-**Parameters:**
-- `vault`: Name or path of the vault
-- `folder`: Optional subfolder path
-- `include_attachments`: Whether to include non-markdown files
+**Search Operators for Properties:**
+- `equals` - Exact match
+- `contains` - Substring match
+- `gt` - Greater than (numeric)
+- `lt` - Less than (numeric)
+- `exists` - Property exists (no value needed)
 
-#### `get_note_metadata`
-Get metadata about a note including tags, links, and frontmatter.
+### Tag Management Tools (7)
 
-### Note Writing Tools
+| Tool | Description |
+|------|-------------|
+| `get_note_tags` | Get all tags from a note |
+| `add_tag_to_note` | Add a tag to a note |
+| `remove_tag_from_note` | Remove a tag from a note |
+| `rename_tag_in_note` | Rename a tag in one note |
+| `rename_tag_across_vault` | Rename a tag everywhere |
+| `get_all_tags` | List all tags with counts |
+| `find_notes_by_tag` | Find notes with a specific tag |
 
-#### `write_note`
-Create or overwrite a note.
+### Task Management Tools (7)
 
-**Parameters:**
-- `vault`: Name or path of the vault
-- `path`: Path for the new note
-- `content`: Markdown content
-- `append`: Whether to append to existing content
+| Tool | Description |
+|------|-------------|
+| `get_note_tasks` | Get all tasks from a note |
+| `add_task` | Add a new task |
+| `complete_task` | Mark a task complete |
+| `uncomplete_task` | Mark a task incomplete |
+| `delete_task` | Delete a task |
+| `update_task` | Modify task properties |
+| `search_tasks` | Search tasks across vault |
 
-#### `create_note_with_template`
-Create a note with structured frontmatter and formatting.
+**Task Features:**
+- Supports `- [ ]` and `* [ ]` syntax
+- Due dates: `📅 YYYY-MM-DD`
+- Priority: `🔼` high, `🔽` low (default: normal)
+- Inline tags supported
 
-#### `delete_note`
-Delete a note (with automatic backup).
+### Search Tools (3)
 
-#### `move_note`
-Move or rename a note within the vault.
+| Tool | Description |
+|------|-------------|
+| `search_notes` | Full-text search with regex |
+| `find_backlinks` | Find notes linking to a note |
+| `search_by_property` | Search by frontmatter |
 
-#### `append_to_note`
-Append content to the end of an existing note.
+### Obsidian App Control (8)
 
-#### `prepend_to_note`
-Prepend content to the beginning of an existing note.
-
-### Search Tools
-
-#### `search_notes`
-Search for notes by content or filename.
-
-**Parameters:**
-- `vault`: Name or path of the vault
-- `query`: Search query (supports regex)
-- `case_sensitive`: Case sensitivity flag
-- `search_content`: Whether to search in file content
-
-#### `find_notes_by_tag`
-Find all notes with a specific tag.
-
-#### `find_backlinks`
-Find all notes that link to a specific note.
-
-### Obsidian Control Tools
-
-#### `is_obsidian_running`
-Check if Obsidian is currently running.
-
-#### `launch_obsidian`
-Launch Obsidian, optionally opening a specific vault.
-
-#### `open_note_in_obsidian`
-Open a specific note in the Obsidian app.
-
-#### `create_note_in_obsidian`
-Create a new note using Obsidian's native URI scheme.
-
-#### `open_daily_note`
-Open or create the daily note.
-
-#### `search_in_obsidian`
-Open Obsidian's search with a query.
-
-#### `focus_obsidian`
-Bring Obsidian to the foreground.
-
-#### `get_active_note`
-Get information about the currently open note.
-
-#### `get_obsidian_version`
-Get the installed Obsidian version.
+| Tool | Description |
+|------|-------------|
+| `is_obsidian_running` | Check if app is running |
+| `launch_obsidian` | Launch the app |
+| `open_note_in_obsidian` | Open a note in UI |
+| `create_note_in_obsidian` | Create note via URI |
+| `open_daily_note` | Open daily note |
+| `search_in_obsidian` | Open search in app |
+| `focus_obsidian` | Bring app to front |
+| `get_active_note` | Get current note info |
+| `get_obsidian_version` | Get Obsidian version |
 
 ## Usage Examples
 
-### Reading a Note
+### Reading & Writing Notes
 ```
 Read the content of my "Projects/Ideas" note from the "Personal" vault.
 ```
 
-### Searching
+### Working with Properties
 ```
-Search for all notes containing "meeting" in the "Work" vault.
+Set the "status" property to "in-progress" in the note "Project Alpha"
 ```
 
-### Creating Notes
 ```
-Create a new note called "Meeting Notes 2024-01-15" in the Work/Meetings folder with tags: work, meeting, january
+Find all notes where the "priority" property equals "high"
+```
+
+### Tag Management
+```
+Add the tag "urgent" to all notes in the Work folder
+```
+
+```
+Rename tag "old-project" to "new-project" across the entire vault
+```
+
+```
+What are the most used tags in my vault?
+```
+
+### Task Management
+```
+Add a task "Review quarterly report" due 2024-12-31 with high priority to my daily note
+```
+
+```
+Find all incomplete tasks tagged with "work" that are due this week
+```
+
+```
+Mark the task "Email client" as complete in the Projects/Clients note
+```
+
+### Searching
+```
+Search for all notes containing "meeting" in the "Work" vault
+```
+
+```
+Find all notes with property "type" set to "project" and tag "active"
 ```
 
 ### Working with Obsidian
 ```
-Open the daily note in Obsidian and bring it to the foreground.
+Open the daily note in Obsidian and bring it to the foreground
+```
+
+```
+Create a new note called "Meeting Notes 2024-01-15" in the Work/Meetings folder with tags: work, meeting, january
 ```
 
 ### Finding Connections
 ```
-Find all notes that link to "Project Alpha" and list their tags.
+Find all notes that link to "Project Alpha" and list their tags
 ```
 
 ## Architecture
@@ -265,6 +320,11 @@ OBSIDIAN_DEFAULT_VAULT="My Vault" uv run mcp-apple-obsidian
 uv run python -m mcp_apple_obsidian.server
 ```
 
+### Testing with MCP Inspector
+```bash
+npx @modelcontextprotocol/inspector uv run mcp-apple-obsidian
+```
+
 ## License
 
 MIT License - See LICENSE file for details.
@@ -289,3 +349,14 @@ If AppleScript commands fail, ensure:
 
 ### Large Files
 If reading large notes fails, increase `OBSIDIAN_MAX_FILE_SIZE`.
+
+### Task Format
+This server supports standard Obsidian task syntax:
+```markdown
+- [ ] Incomplete task
+- [x] Completed task
+- [ ] Task with due date 📅 2024-12-25
+- [ ] High priority task 🔼
+- [ ] Low priority task 🔽
+- [ ] Task with #tag
+```

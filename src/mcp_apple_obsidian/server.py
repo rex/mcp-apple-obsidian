@@ -685,6 +685,500 @@ async def get_vault_stats(vault: str) -> str:
 
 
 # =============================================================================
+# Frontmatter / Properties Tools
+# =============================================================================
+
+@mcp.tool()
+async def get_note_properties(vault: str, path: str) -> str:
+    """Get all frontmatter properties from a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        
+    Returns:
+        JSON with all properties
+    """
+    try:
+        properties = await vault_fs.get_frontmatter(vault, path)
+        return json.dumps(properties, indent=2)
+    except Exception as e:
+        logger.error(f"Error getting properties: {e}")
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
+async def set_note_property(
+    vault: str,
+    path: str,
+    property_name: str,
+    property_value: str
+) -> str:
+    """Set a frontmatter property on a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        property_name: Name of the property to set
+        property_value: Value to set (will be parsed as YAML)
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        # Try to parse as YAML for proper types
+        import yaml
+        try:
+            parsed_value = yaml.safe_load(property_value)
+        except yaml.YAMLError:
+            parsed_value = property_value
+        
+        await vault_fs.update_frontmatter_property(vault, path, property_name, parsed_value)
+        return f"Successfully set '{property_name}' to '{property_value}' in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error setting property: {e}")
+        return f"Error setting property: {e}"
+
+
+@mcp.tool()
+async def delete_note_property(vault: str, path: str, property_name: str) -> str:
+    """Delete a frontmatter property from a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        property_name: Name of the property to delete
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        deleted = await vault_fs.delete_frontmatter_property(vault, path, property_name)
+        if deleted:
+            return f"Successfully deleted property '{property_name}' from note '{path}'"
+        else:
+            return f"Property '{property_name}' not found in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error deleting property: {e}")
+        return f"Error deleting property: {e}"
+
+
+@mcp.tool()
+async def set_multiple_properties(
+    vault: str,
+    path: str,
+    properties: str
+) -> str:
+    """Set multiple frontmatter properties on a note at once.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        properties: JSON object with properties to set
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        import yaml
+        props = json.loads(properties)
+        # Parse values as YAML for proper typing
+        parsed_props = {}
+        for key, value in props.items():
+            if isinstance(value, str):
+                try:
+                    parsed_props[key] = yaml.safe_load(value)
+                except yaml.YAMLError:
+                    parsed_props[key] = value
+            else:
+                parsed_props[key] = value
+        
+        await vault_fs.set_frontmatter(vault, path, parsed_props, merge=True)
+        return f"Successfully set {len(props)} properties in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error setting properties: {e}")
+        return f"Error setting properties: {e}"
+
+
+@mcp.tool()
+async def search_by_property(
+    vault: str,
+    property_name: str,
+    property_value: Optional[str] = None,
+    operator: str = "equals"
+) -> str:
+    """Search notes by frontmatter property value.
+    
+    Args:
+        vault: Name or path of the vault
+        property_name: Name of the property to search
+        property_value: Value to search for (optional for "exists" operator)
+        operator: Comparison operator ("equals", "contains", "gt", "lt", "exists")
+        
+    Returns:
+        JSON array of matching notes
+    """
+    try:
+        results = []
+        async for note in vault_fs.search_by_property(vault, property_name, property_value, operator):
+            results.append(note)
+        
+        return json.dumps(results, indent=2)
+    except Exception as e:
+        logger.error(f"Error searching by property: {e}")
+        return json.dumps({"error": str(e)})
+
+
+# =============================================================================
+# Tag Management Tools
+# =============================================================================
+
+@mcp.tool()
+async def get_note_tags(vault: str, path: str) -> str:
+    """Get all tags from a note (both inline and frontmatter).
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        
+    Returns:
+        JSON array of tags
+    """
+    try:
+        tags = await vault_fs.get_note_tags(vault, path)
+        return json.dumps(tags, indent=2)
+    except Exception as e:
+        logger.error(f"Error getting tags: {e}")
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
+async def add_tag_to_note(vault: str, path: str, tag: str) -> str:
+    """Add a tag to a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        tag: Tag to add (without # prefix)
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        added = await vault_fs.add_tag_to_note(vault, path, tag)
+        if added:
+            return f"Successfully added tag '{tag}' to note '{path}'"
+        else:
+            return f"Tag '{tag}' already exists in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error adding tag: {e}")
+        return f"Error adding tag: {e}"
+
+
+@mcp.tool()
+async def remove_tag_from_note(vault: str, path: str, tag: str) -> str:
+    """Remove a tag from a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        tag: Tag to remove (without # prefix)
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        removed = await vault_fs.remove_tag_from_note(vault, path, tag)
+        if removed:
+            return f"Successfully removed tag '{tag}' from note '{path}'"
+        else:
+            return f"Tag '{tag}' not found in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error removing tag: {e}")
+        return f"Error removing tag: {e}"
+
+
+@mcp.tool()
+async def rename_tag_in_note(vault: str, path: str, old_tag: str, new_tag: str) -> str:
+    """Rename a tag within a single note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        old_tag: Current tag name (without #)
+        new_tag: New tag name (without #)
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        renamed = await vault_fs.rename_tag_in_note(vault, path, old_tag, new_tag)
+        if renamed:
+            return f"Successfully renamed tag '{old_tag}' to '{new_tag}' in note '{path}'"
+        else:
+            return f"Tag '{old_tag}' not found in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error renaming tag: {e}")
+        return f"Error renaming tag: {e}"
+
+
+@mcp.tool()
+async def rename_tag_across_vault(vault: str, old_tag: str, new_tag: str) -> str:
+    """Rename a tag across all notes in the vault.
+    
+    Args:
+        vault: Name or path of the vault
+        old_tag: Current tag name (without #)
+        new_tag: New tag name (without #)
+        
+    Returns:
+        JSON with count of updated notes
+    """
+    try:
+        updated = []
+        async for result in vault_fs.rename_tag_across_vault(vault, old_tag, new_tag):
+            updated.append(result)
+        
+        return json.dumps({
+            "renamed_from": old_tag,
+            "renamed_to": new_tag,
+            "updated_notes_count": len(updated),
+            "updated_notes": updated
+        }, indent=2)
+    except Exception as e:
+        logger.error(f"Error renaming tag across vault: {e}")
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
+async def get_all_tags(vault: str) -> str:
+    """Get all unique tags across the vault with their occurrence counts.
+    
+    Args:
+        vault: Name or path of the vault
+        
+    Returns:
+        JSON object with tag counts
+    """
+    try:
+        tag_counts = await vault_fs.get_all_tags(vault)
+        # Sort by count descending
+        sorted_tags = dict(sorted(tag_counts.items(), key=lambda x: x[1], reverse=True))
+        return json.dumps(sorted_tags, indent=2)
+    except Exception as e:
+        logger.error(f"Error getting all tags: {e}")
+        return json.dumps({"error": str(e)})
+
+
+# =============================================================================
+# Task Management Tools
+# =============================================================================
+
+@mcp.tool()
+async def get_note_tasks(
+    vault: str,
+    path: str,
+    include_completed: bool = True
+) -> str:
+    """Get all tasks from a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        include_completed: Whether to include completed tasks
+        
+    Returns:
+        JSON array of tasks
+    """
+    try:
+        tasks = await vault_fs.get_note_tasks(vault, path, include_completed)
+        task_list = []
+        for task in tasks:
+            task_list.append({
+                "description": task.description,
+                "completed": task.completed,
+                "due_date": task.due_date,
+                "priority": task.priority,
+                "tags": task.tags,
+                "line_number": task.line_number,
+            })
+        return json.dumps(task_list, indent=2)
+    except Exception as e:
+        logger.error(f"Error getting tasks: {e}")
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
+async def add_task(
+    vault: str,
+    path: str,
+    description: str,
+    completed: bool = False,
+    due_date: Optional[str] = None,
+    priority: Optional[str] = None,
+    tags: Optional[str] = None
+) -> str:
+    """Add a new task to a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        description: Task description
+        completed: Whether the task is completed
+        due_date: Optional due date (YYYY-MM-DD format)
+        priority: Optional priority ("high", "normal", "low")
+        tags: Optional comma-separated list of tags
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        tag_list = [t.strip() for t in tags.split(",")] if tags else None
+        await vault_fs.add_task(vault, path, description, completed, due_date, priority, tag_list)
+        return f"Successfully added task to note '{path}'"
+    except Exception as e:
+        logger.error(f"Error adding task: {e}")
+        return f"Error adding task: {e}"
+
+
+@mcp.tool()
+async def complete_task(vault: str, path: str, task_description_contains: str) -> str:
+    """Mark a task as completed by matching its description.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        task_description_contains: Text to match in task description
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        completed = await vault_fs.complete_task(vault, path, task_description_contains)
+        if completed:
+            return f"Successfully completed task matching '{task_description_contains}' in note '{path}'"
+        else:
+            return f"No incomplete task found matching '{task_description_contains}' in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error completing task: {e}")
+        return f"Error completing task: {e}"
+
+
+@mcp.tool()
+async def uncomplete_task(vault: str, path: str, task_description_contains: str) -> str:
+    """Mark a completed task as incomplete.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        task_description_contains: Text to match in task description
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        uncompleted = await vault_fs.uncomplete_task(vault, path, task_description_contains)
+        if uncompleted:
+            return f"Successfully marked task as incomplete in note '{path}'"
+        else:
+            return f"No completed task found matching '{task_description_contains}' in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error uncompleting task: {e}")
+        return f"Error uncompleting task: {e}"
+
+
+@mcp.tool()
+async def delete_task(vault: str, path: str, task_description_contains: str) -> str:
+    """Delete a task from a note.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        task_description_contains: Text to match in task description
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        deleted = await vault_fs.delete_task(vault, path, task_description_contains)
+        if deleted:
+            return f"Successfully deleted task from note '{path}'"
+        else:
+            return f"No task found matching '{task_description_contains}' in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error deleting task: {e}")
+        return f"Error deleting task: {e}"
+
+
+@mcp.tool()
+async def update_task(
+    vault: str,
+    path: str,
+    task_description_contains: str,
+    new_description: Optional[str] = None,
+    new_due_date: Optional[str] = None,
+    new_priority: Optional[str] = None
+) -> str:
+    """Update a task's properties.
+    
+    Args:
+        vault: Name or path of the vault
+        path: Path to the note within the vault
+        task_description_contains: Text to match in current description
+        new_description: New description text (optional)
+        new_due_date: New due date (YYYY-MM-DD, or "remove" to clear)
+        new_priority: New priority ("high", "normal", "low", or "remove")
+        
+    Returns:
+        Success message or error
+    """
+    try:
+        updated = await vault_fs.update_task(
+            vault, path, task_description_contains, new_description, new_due_date, new_priority
+        )
+        if updated:
+            return f"Successfully updated task in note '{path}'"
+        else:
+            return f"No task found matching '{task_description_contains}' in note '{path}'"
+    except Exception as e:
+        logger.error(f"Error updating task: {e}")
+        return f"Error updating task: {e}"
+
+
+@mcp.tool()
+async def search_tasks(
+    vault: str,
+    status: str = "all",
+    tag: Optional[str] = None,
+    due_before: Optional[str] = None,
+    due_after: Optional[str] = None,
+    description_contains: Optional[str] = None
+) -> str:
+    """Search for tasks across the vault.
+    
+    Args:
+        vault: Name or path of the vault
+        status: Task status filter ("all", "completed", "incomplete")
+        tag: Optional tag to filter by
+        due_before: Filter tasks due before this date (YYYY-MM-DD)
+        due_after: Filter tasks due after this date (YYYY-MM-DD)
+        description_contains: Search text in task descriptions
+        
+    Returns:
+        JSON array of matching tasks
+    """
+    try:
+        results = []
+        async for task in vault_fs.search_tasks(vault, status, tag, due_before, due_after, description_contains):
+            results.append(task)
+        
+        return json.dumps(results, indent=2)
+    except Exception as e:
+        logger.error(f"Error searching tasks: {e}")
+        return json.dumps({"error": str(e)})
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
