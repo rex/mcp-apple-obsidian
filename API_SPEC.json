@@ -1,0 +1,1169 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MCP Apple Obsidian API",
+    "version": "0.1.0",
+    "description": "Comprehensive MCP server for Obsidian on macOS providing vault, note, tag, task, and app control operations."
+  },
+  "tools": [
+    {
+      "name": "obsidian_add_tag",
+      "description": "Add a tag to a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        tag: Tag to add (without # prefix)\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "tag": {
+            "title": "Tag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "tag"
+        ],
+        "title": "obsidian_add_tagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_add_task",
+      "description": "Add a new task to a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        description: Task description\n        completed: Whether the task is completed\n        due_date: Optional due date (YYYY-MM-DD format)\n        priority: Optional priority (\"high\", \"normal\", \"low\")\n        tags: Optional comma-separated list of tags\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "completed": {
+            "default": false,
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Due Date"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Priority"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "description"
+        ],
+        "title": "obsidian_add_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_append_note",
+      "description": "Append content to the end of an existing note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        content: Content to append\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "content"
+        ],
+        "title": "obsidian_append_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_check_app_running",
+      "description": "Check if the Obsidian application is currently running.\n    \n    Returns:\n        \"true\" if running, \"false\" otherwise\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "obsidian_check_app_runningArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_complete_task",
+      "description": "Mark a task as completed by matching its description.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        task_description_contains: Text to match in task description\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "task_description_contains": {
+            "title": "Task Description Contains",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "task_description_contains"
+        ],
+        "title": "obsidian_complete_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_create_note",
+      "description": "Create a new note with a structured template.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path where the note should be created\n        title: Optional title (defaults to filename)\n        tags: Optional list of tags to add\n        content: Optional main content body\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_create_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_create_note_in_app",
+      "description": "Create a new note using Obsidian's URI scheme.\n    \n    Args:\n        vault: Name or ID of the vault\n        name: Name for the new note\n        content: Optional initial content\n        silent: If true, don't open the note after creation\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content"
+          },
+          "silent": {
+            "default": false,
+            "title": "Silent",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault",
+          "name"
+        ],
+        "title": "obsidian_create_note_in_appArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_delete_note",
+      "description": "Delete a note from the vault.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note to delete\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_delete_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_delete_property",
+      "description": "Delete a frontmatter property from a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        property_name: Name of the property to delete\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "property_name": {
+            "title": "Property Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "property_name"
+        ],
+        "title": "obsidian_delete_propertyArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_delete_task",
+      "description": "Delete a task from a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        task_description_contains: Text to match in task description\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "task_description_contains": {
+            "title": "Task Description Contains",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "task_description_contains"
+        ],
+        "title": "obsidian_delete_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_find_backlinks",
+      "description": "Find all notes that link to a specific note.\n    \n    Args:\n        vault: Name or path of the vault\n        note_path: Path to the target note (without .md extension)\n        \n    Returns:\n        JSON array of notes that link to the target\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "note_path": {
+            "title": "Note Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "note_path"
+        ],
+        "title": "obsidian_find_backlinksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_find_notes_by_tag",
+      "description": "Find all notes that contain a specific tag.\n    \n    Args:\n        vault: Name or path of the vault\n        tag: Tag to search for (without the #)\n        \n    Returns:\n        JSON array of matching notes\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "tag": {
+            "title": "Tag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "tag"
+        ],
+        "title": "obsidian_find_notes_by_tagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_focus_app",
+      "description": "Bring Obsidian to the foreground (activate it).\n    \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "obsidian_focus_appArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_active_note_info",
+      "description": "Get information about the currently active note in Obsidian.\n    \n    Returns:\n        JSON with note info (title, vault) or error message\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "obsidian_get_active_note_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_app_version",
+      "description": "Get the version of the installed Obsidian application.\n    \n    Returns:\n        Version string or error message\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "obsidian_get_app_versionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_note_metadata",
+      "description": "Get metadata about a note including tags, links, word count, and frontmatter.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        \n    Returns:\n        JSON with note metadata\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_get_note_metadataArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_properties",
+      "description": "Get all frontmatter properties from a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        \n    Returns:\n        JSON with all properties\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_get_propertiesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_tags",
+      "description": "Get all tags from a note (both inline and frontmatter).\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        \n    Returns:\n        JSON array of tags\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_get_tagsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_tasks",
+      "description": "Get all tasks from a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        include_completed: Whether to include completed tasks\n        \n    Returns:\n        JSON array of tasks\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "include_completed": {
+            "default": true,
+            "title": "Include Completed",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_get_tasksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_vault_info",
+      "description": "Get detailed information about a specific vault.\n    \n    Args:\n        vault: Name or path of the vault\n        \n    Returns:\n        JSON with vault path, note count, and folder structure\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_get_vault_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_get_vault_stats",
+      "description": "Get comprehensive statistics about a vault.\n    \n    Args:\n        vault: Name or path of the vault\n        \n    Returns:\n        JSON with vault statistics including tag counts, link analysis\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_get_vault_statsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_launch_app",
+      "description": "Launch the Obsidian application, optionally opening a specific vault.\n    \n    Args:\n        vault: Optional vault name to open on launch\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Vault"
+          }
+        },
+        "title": "obsidian_launch_appArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_list_all_tags",
+      "description": "Get all unique tags across the vault with their occurrence counts.\n    \n    Args:\n        vault: Name or path of the vault\n        \n    Returns:\n        JSON object with tag counts\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_list_all_tagsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_list_notes",
+      "description": "List all notes in a vault or specific folder.\n    \n    Args:\n        vault: Name or path of the vault\n        folder: Optional subfolder path to list (e.g., \"Projects\")\n        include_attachments: Whether to include non-markdown files\n        \n    Returns:\n        JSON array of note information\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "folder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Folder"
+          },
+          "include_attachments": {
+            "default": false,
+            "title": "Include Attachments",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_list_notesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_list_vaults",
+      "description": "List all known Obsidian vaults on this Mac.\n    \n    Returns a JSON array of vault information including name, ID, and path.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "obsidian_list_vaultsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_move_note",
+      "description": "Move or rename a note within the vault.\n    \n    Args:\n        vault: Name or path of the vault\n        source_path: Current path of the note\n        dest_path: New path for the note\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "source_path": {
+            "title": "Source Path",
+            "type": "string"
+          },
+          "dest_path": {
+            "title": "Dest Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "source_path",
+          "dest_path"
+        ],
+        "title": "obsidian_move_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_open_daily_note",
+      "description": "Open or create the daily note in Obsidian.\n    \n    Args:\n        vault: Name or ID of the vault\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_open_daily_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_open_note_in_app",
+      "description": "Open a specific note in the Obsidian application.\n    \n    Args:\n        vault: Name or ID of the vault\n        file: Path to the note within the vault\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "file": {
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "file"
+        ],
+        "title": "obsidian_open_note_in_appArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_open_search_in_app",
+      "description": "Open search in Obsidian with a query.\n    \n    Args:\n        vault: Name or ID of the vault\n        query: Search query to execute\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "query"
+        ],
+        "title": "obsidian_open_search_in_appArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_prepend_note",
+      "description": "Prepend content to the beginning of an existing note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        content: Content to prepend\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "content"
+        ],
+        "title": "obsidian_prepend_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_read_note",
+      "description": "Read the contents of a specific note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault (e.g., \"Folder/Note Name\")\n        \n    Returns:\n        The full content of the note as markdown text\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ],
+        "title": "obsidian_read_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_remove_tag",
+      "description": "Remove a tag from a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        tag: Tag to remove (without # prefix)\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "tag": {
+            "title": "Tag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "tag"
+        ],
+        "title": "obsidian_remove_tagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_rename_tag_in_note",
+      "description": "Rename a tag within a single note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        old_tag: Current tag name (without #)\n        new_tag: New tag name (without #)\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "old_tag": {
+            "title": "Old Tag",
+            "type": "string"
+          },
+          "new_tag": {
+            "title": "New Tag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "old_tag",
+          "new_tag"
+        ],
+        "title": "obsidian_rename_tag_in_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_rename_tag_vault",
+      "description": "Rename a tag across all notes in the vault.\n    \n    Args:\n        vault: Name or path of the vault\n        old_tag: Current tag name (without #)\n        new_tag: New tag name (without #)\n        \n    Returns:\n        JSON with count of updated notes\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "old_tag": {
+            "title": "Old Tag",
+            "type": "string"
+          },
+          "new_tag": {
+            "title": "New Tag",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "old_tag",
+          "new_tag"
+        ],
+        "title": "obsidian_rename_tag_vaultArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_search_by_property",
+      "description": "Search notes by frontmatter property value.\n    \n    Args:\n        vault: Name or path of the vault\n        property_name: Name of the property to search\n        property_value: Value to search for (optional for \"exists\" operator)\n        operator: Comparison operator (\"equals\", \"contains\", \"gt\", \"lt\", \"exists\")\n        \n    Returns:\n        JSON array of matching notes\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "property_name": {
+            "title": "Property Name",
+            "type": "string"
+          },
+          "property_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Property Value"
+          },
+          "operator": {
+            "default": "equals",
+            "title": "Operator",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "property_name"
+        ],
+        "title": "obsidian_search_by_propertyArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_search_notes",
+      "description": "Search for notes containing specific text or matching a pattern.\n    \n    Args:\n        vault: Name or path of the vault\n        query: Search query (supports regex patterns)\n        case_sensitive: Whether search is case sensitive\n        search_content: Whether to search in file content (not just names)\n        \n    Returns:\n        JSON array of matching notes with context\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "case_sensitive": {
+            "default": false,
+            "title": "Case Sensitive",
+            "type": "boolean"
+          },
+          "search_content": {
+            "default": true,
+            "title": "Search Content",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault",
+          "query"
+        ],
+        "title": "obsidian_search_notesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_search_tasks",
+      "description": "Search for tasks across the vault.\n    \n    Args:\n        vault: Name or path of the vault\n        status: Task status filter (\"all\", \"completed\", \"incomplete\")\n        tag: Optional tag to filter by\n        due_before: Filter tasks due before this date (YYYY-MM-DD)\n        due_after: Filter tasks due after this date (YYYY-MM-DD)\n        description_contains: Search text in task descriptions\n        \n    Returns:\n        JSON array of matching tasks\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "status": {
+            "default": "all",
+            "title": "Status",
+            "type": "string"
+          },
+          "tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tag"
+          },
+          "due_before": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Due Before"
+          },
+          "due_after": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Due After"
+          },
+          "description_contains": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description Contains"
+          }
+        },
+        "required": [
+          "vault"
+        ],
+        "title": "obsidian_search_tasksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_set_properties",
+      "description": "Set multiple frontmatter properties on a note at once.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        properties: JSON object with properties to set\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "properties": {
+            "type": "string",
+            "title": "Properties"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "properties"
+        ],
+        "title": "obsidian_set_propertiesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_set_property",
+      "description": "Set a frontmatter property on a note.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        property_name: Name of the property to set\n        property_value: Value to set (will be parsed as YAML)\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "property_name": {
+            "title": "Property Name",
+            "type": "string"
+          },
+          "property_value": {
+            "title": "Property Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "property_name",
+          "property_value"
+        ],
+        "title": "obsidian_set_propertyArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_uncomplete_task",
+      "description": "Mark a completed task as incomplete.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        task_description_contains: Text to match in task description\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "task_description_contains": {
+            "title": "Task Description Contains",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "task_description_contains"
+        ],
+        "title": "obsidian_uncomplete_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_update_task",
+      "description": "Update a task's properties.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path to the note within the vault\n        task_description_contains: Text to match in current description\n        new_description: New description text (optional)\n        new_due_date: New due date (YYYY-MM-DD, or \"remove\" to clear)\n        new_priority: New priority (\"high\", \"normal\", \"low\", or \"remove\")\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "task_description_contains": {
+            "title": "Task Description Contains",
+            "type": "string"
+          },
+          "new_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "New Description"
+          },
+          "new_due_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "New Due Date"
+          },
+          "new_priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "New Priority"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "task_description_contains"
+        ],
+        "title": "obsidian_update_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "obsidian_write_note",
+      "description": "Create a new note or overwrite an existing one.\n    \n    Args:\n        vault: Name or path of the vault\n        path: Path where the note should be created (e.g., \"Folder/Note Name\")\n        content: The markdown content to write\n        append: If true, append to existing content instead of overwriting\n        \n    Returns:\n        Success message or error\n    ",
+      "inputSchema": {
+        "properties": {
+          "vault": {
+            "title": "Vault",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "append": {
+            "default": false,
+            "title": "Append",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault",
+          "path",
+          "content"
+        ],
+        "title": "obsidian_write_noteArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

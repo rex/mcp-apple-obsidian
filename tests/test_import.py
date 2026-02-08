@@ -11,7 +11,7 @@ def test_import():
 
 
 def test_server_tools():
-    """Test that tools are registered."""
+    """Test that tools are registered with obsidian_ prefix."""
     from mcp_apple_obsidian.server import mcp
     import asyncio
     
@@ -24,33 +24,42 @@ def test_server_tools():
     
     tool_names = [t.name for t in tools]
     
-    # Core tools
-    assert "list_vaults" in tool_names
-    assert "read_note" in tool_names
-    assert "write_note" in tool_names
+    # All tools should have obsidian_ prefix
+    for name in tool_names:
+        assert name.startswith("obsidian_"), f"Tool '{name}' missing obsidian_ prefix"
+    
+    # Core vault tools
+    assert "obsidian_list_vaults" in tool_names
+    assert "obsidian_read_note" in tool_names
+    assert "obsidian_write_note" in tool_names
     
     # Frontmatter/property tools
-    assert "get_note_properties" in tool_names
-    assert "set_note_property" in tool_names
-    assert "delete_note_property" in tool_names
-    assert "search_by_property" in tool_names
+    assert "obsidian_get_properties" in tool_names
+    assert "obsidian_set_property" in tool_names
+    assert "obsidian_delete_property" in tool_names
+    assert "obsidian_search_by_property" in tool_names
     
     # Tag tools
-    assert "get_note_tags" in tool_names
-    assert "add_tag_to_note" in tool_names
-    assert "remove_tag_from_note" in tool_names
-    assert "rename_tag_in_note" in tool_names
-    assert "rename_tag_across_vault" in tool_names
-    assert "get_all_tags" in tool_names
+    assert "obsidian_get_tags" in tool_names
+    assert "obsidian_add_tag" in tool_names
+    assert "obsidian_remove_tag" in tool_names
+    assert "obsidian_rename_tag_in_note" in tool_names
+    assert "obsidian_rename_tag_vault" in tool_names
+    assert "obsidian_list_all_tags" in tool_names
     
     # Task tools
-    assert "get_note_tasks" in tool_names
-    assert "add_task" in tool_names
-    assert "complete_task" in tool_names
-    assert "uncomplete_task" in tool_names
-    assert "delete_task" in tool_names
-    assert "update_task" in tool_names
-    assert "search_tasks" in tool_names
+    assert "obsidian_get_tasks" in tool_names
+    assert "obsidian_add_task" in tool_names
+    assert "obsidian_complete_task" in tool_names
+    assert "obsidian_uncomplete_task" in tool_names
+    assert "obsidian_delete_task" in tool_names
+    assert "obsidian_update_task" in tool_names
+    assert "obsidian_search_tasks" in tool_names
+    
+    # App control tools
+    assert "obsidian_check_app_running" in tool_names
+    assert "obsidian_launch_app" in tool_names
+    assert "obsidian_open_note_in_app" in tool_names
 
 
 def test_config():

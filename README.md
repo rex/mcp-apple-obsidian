@@ -127,42 +127,44 @@ Or for local development:
 
 ## Available Tools (42 Total)
 
+All tool names are prefixed with `obsidian_` for clear context.
+
 ### Vault Tools (3)
 
 | Tool | Description |
 |------|-------------|
-| `list_vaults` | List all known Obsidian vaults |
-| `get_vault_info` | Get detailed vault information |
-| `get_vault_stats` | Get comprehensive vault statistics |
+| `obsidian_list_vaults` | List all known Obsidian vaults |
+| `obsidian_get_vault_info` | Get detailed vault information |
+| `obsidian_get_vault_stats` | Get comprehensive vault statistics |
 
 ### Note Reading Tools (3)
 
 | Tool | Description |
 |------|-------------|
-| `read_note` | Read note content |
-| `list_notes` | List notes in a vault/folder |
-| `get_note_metadata` | Get tags, links, frontmatter, word count |
+| `obsidian_read_note` | Read note content |
+| `obsidian_list_notes` | List notes in a vault/folder |
+| `obsidian_get_note_metadata` | Get tags, links, frontmatter, word count |
 
 ### Note Writing Tools (6)
 
 | Tool | Description |
 |------|-------------|
-| `write_note` | Create or overwrite notes |
-| `create_note_with_template` | Create structured notes with frontmatter |
-| `delete_note` | Delete notes with backup |
-| `move_note` | Move/rename notes |
-| `append_to_note` | Append content to notes |
-| `prepend_to_note` | Prepend content to notes |
+| `obsidian_write_note` | Create or overwrite notes |
+| `obsidian_create_note` | Create structured notes with frontmatter |
+| `obsidian_delete_note` | Delete notes with backup |
+| `obsidian_move_note` | Move/rename notes |
+| `obsidian_append_note` | Append content to notes |
+| `obsidian_prepend_note` | Prepend content to notes |
 
 ### Frontmatter/Property Tools (5)
 
 | Tool | Description |
 |------|-------------|
-| `get_note_properties` | Get all frontmatter properties |
-| `set_note_property` | Set a single property |
-| `set_multiple_properties` | Batch update properties (JSON) |
-| `delete_note_property` | Remove a property |
-| `search_by_property` | Search notes by property value |
+| `obsidian_get_properties` | Get all frontmatter properties |
+| `obsidian_set_property` | Set a single property |
+| `obsidian_set_properties` | Batch update properties (JSON) |
+| `obsidian_delete_property` | Remove a property |
+| `obsidian_search_by_property` | Search notes by property value |
 
 **Search Operators for Properties:**
 - `equals` - Exact match
@@ -175,25 +177,25 @@ Or for local development:
 
 | Tool | Description |
 |------|-------------|
-| `get_note_tags` | Get all tags from a note |
-| `add_tag_to_note` | Add a tag to a note |
-| `remove_tag_from_note` | Remove a tag from a note |
-| `rename_tag_in_note` | Rename a tag in one note |
-| `rename_tag_across_vault` | Rename a tag everywhere |
-| `get_all_tags` | List all tags with counts |
-| `find_notes_by_tag` | Find notes with a specific tag |
+| `obsidian_get_tags` | Get all tags from a note |
+| `obsidian_add_tag` | Add a tag to a note |
+| `obsidian_remove_tag` | Remove a tag from a note |
+| `obsidian_rename_tag_in_note` | Rename a tag in one note |
+| `obsidian_rename_tag_vault` | Rename a tag everywhere |
+| `obsidian_list_all_tags` | List all tags with counts |
+| `obsidian_find_notes_by_tag` | Find notes with a specific tag |
 
 ### Task Management Tools (7)
 
 | Tool | Description |
 |------|-------------|
-| `get_note_tasks` | Get all tasks from a note |
-| `add_task` | Add a new task |
-| `complete_task` | Mark a task complete |
-| `uncomplete_task` | Mark a task incomplete |
-| `delete_task` | Delete a task |
-| `update_task` | Modify task properties |
-| `search_tasks` | Search tasks across vault |
+| `obsidian_get_tasks` | Get all tasks from a note |
+| `obsidian_add_task` | Add a new task |
+| `obsidian_complete_task` | Mark a task complete |
+| `obsidian_uncomplete_task` | Mark a task incomplete |
+| `obsidian_delete_task` | Delete a task |
+| `obsidian_update_task` | Modify task properties |
+| `obsidian_search_tasks` | Search tasks across vault |
 
 **Task Features:**
 - Supports `- [ ]` and `* [ ]` syntax
@@ -201,92 +203,97 @@ Or for local development:
 - Priority: `🔼` high, `🔽` low (default: normal)
 - Inline tags supported
 
-### Search Tools (3)
+### Search Tools (2)
 
 | Tool | Description |
 |------|-------------|
-| `search_notes` | Full-text search with regex |
-| `find_backlinks` | Find notes linking to a note |
-| `search_by_property` | Search by frontmatter |
+| `obsidian_search_notes` | Full-text search with regex |
+| `obsidian_find_backlinks` | Find notes linking to a note |
 
-### Obsidian App Control (8)
+### Obsidian App Control (9)
 
 | Tool | Description |
 |------|-------------|
-| `is_obsidian_running` | Check if app is running |
-| `launch_obsidian` | Launch the app |
-| `open_note_in_obsidian` | Open a note in UI |
-| `create_note_in_obsidian` | Create note via URI |
-| `open_daily_note` | Open daily note |
-| `search_in_obsidian` | Open search in app |
-| `focus_obsidian` | Bring app to front |
-| `get_active_note` | Get current note info |
-| `get_obsidian_version` | Get Obsidian version |
+| `obsidian_check_app_running` | Check if app is running |
+| `obsidian_launch_app` | Launch the app |
+| `obsidian_open_note_in_app` | Open a note in UI |
+| `obsidian_create_note_in_app` | Create note via URI |
+| `obsidian_open_daily_note` | Open daily note |
+| `obsidian_open_search_in_app` | Open search in app |
+| `obsidian_focus_app` | Bring app to front |
+| `obsidian_get_active_note_info` | Get current note info |
+| `obsidian_get_app_version` | Get Obsidian version |
 
 ## Usage Examples
 
 ### Reading & Writing Notes
 ```
-Read the content of my "Projects/Ideas" note from the "Personal" vault.
+Read the content of my "Projects/Ideas" note from the "Personal" vault using obsidian_read_note.
 ```
 
 ### Working with Properties
 ```
-Set the "status" property to "in-progress" in the note "Project Alpha"
+Set the "status" property to "in-progress" in the note "Project Alpha" using obsidian_set_property.
 ```
 
 ```
-Find all notes where the "priority" property equals "high"
+Find all notes where the "priority" property equals "high" using obsidian_search_by_property.
 ```
 
 ### Tag Management
 ```
-Add the tag "urgent" to all notes in the Work folder
+Add the tag "urgent" to all notes in the Work folder using obsidian_add_tag.
 ```
 
 ```
-Rename tag "old-project" to "new-project" across the entire vault
+Rename tag "old-project" to "new-project" across the entire vault using obsidian_rename_tag_vault.
 ```
 
 ```
-What are the most used tags in my vault?
+What are the most used tags in my vault? Use obsidian_list_all_tags.
 ```
 
 ### Task Management
 ```
-Add a task "Review quarterly report" due 2024-12-31 with high priority to my daily note
+Add a task "Review quarterly report" due 2024-12-31 with high priority to my daily note using obsidian_add_task.
 ```
 
 ```
-Find all incomplete tasks tagged with "work" that are due this week
+Find all incomplete tasks tagged with "work" using obsidian_search_tasks.
 ```
 
 ```
-Mark the task "Email client" as complete in the Projects/Clients note
+Mark the task "Email client" as complete in the Projects/Clients note using obsidian_complete_task.
 ```
 
 ### Searching
 ```
-Search for all notes containing "meeting" in the "Work" vault
+Search for all notes containing "meeting" in the "Work" vault using obsidian_search_notes.
 ```
 
 ```
-Find all notes with property "type" set to "project" and tag "active"
+Find all notes with property "type" set to "project" and tag "active" using obsidian_search_by_property and obsidian_find_notes_by_tag.
 ```
 
 ### Working with Obsidian
 ```
-Open the daily note in Obsidian and bring it to the foreground
+Open the daily note in Obsidian and bring it to the foreground using obsidian_open_daily_note and obsidian_focus_app.
 ```
 
 ```
-Create a new note called "Meeting Notes 2024-01-15" in the Work/Meetings folder with tags: work, meeting, january
+Create a new note called "Meeting Notes 2024-01-15" in the Work/Meetings folder with tags: work, meeting, january using obsidian_create_note.
 ```
 
 ### Finding Connections
 ```
-Find all notes that link to "Project Alpha" and list their tags
+Find all notes that link to "Project Alpha" and list their tags using obsidian_find_backlinks.
 ```
+
+## API Documentation
+
+See [API.md](API.md) for comprehensive API documentation with detailed input/output schemas.
+
+See [API_SPEC.json](API_SPEC.json) for machine-readable JSON schema.
 
 ## Architecture
 
