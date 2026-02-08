@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "apple-obsidian": {
+      "command": "uvx",
+      "args": ["--from", "mcp-apple-obsidian", "mcp-apple-obsidian"],
+      "env": {
+        "OBSIDIAN_DEFAULT_VAULT": "My Vault",
+        "OBSIDIAN_CREATE_BACKUPS": "true",
+        "OBSIDIAN_BACKUP_DIR": "~/.obsidian-mcp-backups"
+      }
+    }
+  }
+}

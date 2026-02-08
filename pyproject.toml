@@ -1,0 +1,47 @@
+[project]
+name = "mcp-apple-obsidian"
+version = "0.1.0"
+description = "A comprehensive MCP server for Obsidian on macOS with AppleScript, URI scheme, and file system access"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "MCP Apple Obsidian"}
+]
+keywords = ["mcp", "obsidian", "macos", "applescript", "notes"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp>=1.26.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+mcp-apple-obsidian = "mcp_apple_obsidian:main"
+
+[project.urls]
+Homepage = "https://github.com/mcp-servers/mcp-apple-obsidian"
+Repository = "https://github.com/mcp-servers/mcp-apple-obsidian"
+Issues = "https://github.com/mcp-servers/mcp-apple-obsidian/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_apple_obsidian"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+]
