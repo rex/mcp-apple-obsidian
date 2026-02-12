@@ -81,9 +81,9 @@ def build_open_uri(
     if vault:
         params.append(f"vault={urllib.parse.quote(vault)}")
     if file:
-        params.append(f"file={urllib.parse.quote(file)}")
+        params.append(f"file={urllib.parse.quote(file, safe='')}")
     if path:
-        params.append(f"path={urllib.parse.quote(path)}")
+        params.append(f"path={urllib.parse.quote(path, safe='')}")
     if pane_type:
         params.append(f"paneType={pane_type}")
     
@@ -128,9 +128,9 @@ def build_new_note_uri(
     if name:
         params.append(f"name={urllib.parse.quote(name)}")
     if file:
-        params.append(f"file={urllib.parse.quote(file)}")
+        params.append(f"file={urllib.parse.quote(file, safe='')}")
     if path:
-        params.append(f"path={urllib.parse.quote(path)}")
+        params.append(f"path={urllib.parse.quote(path, safe='')}")
     if content:
         params.append(f"content={urllib.parse.quote(content)}")
     if clipboard:

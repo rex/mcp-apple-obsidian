@@ -58,22 +58,33 @@ A comprehensive Model Context Protocol (MCP) server for Obsidian on macOS. This 
 
 ## Installation
 
+### Quick Install (Recommended)
+
+```bash
+# Install via uvx (no permanent installation)
+uvx mcp-apple-obsidian
+
+# Or install via pip
+pip install mcp-apple-obsidian
+```
+
 ### Prerequisites
 - macOS with Obsidian installed
 - Python 3.11 or higher
 - `uv` package manager (recommended)
 
-### Install from source
+### Install from Source
 
 ```bash
 # Clone the repository
 git clone https://github.com/mcp-servers/mcp-apple-obsidian.git
 cd mcp-apple-obsidian
 
-# Install dependencies with uv
-uv sync
+# Quick setup with Makefile
+make setup
 
-# Install in development mode
+# Or manually
+uv sync
 uv pip install -e .
 ```
 
@@ -295,6 +306,41 @@ See [API.md](API.md) for comprehensive API documentation with detailed input/out
 
 See [API_SPEC.json](API_SPEC.json) for machine-readable JSON schema.
 
+## Deployment & Distribution
+
+### For Users
+
+The easiest way to use this MCP server:
+
+```bash
+# Via uvx (no installation required)
+uvx mcp-apple-obsidian
+
+# Via pip
+pip install mcp-apple-obsidian
+mcp-apple-obsidian
+```
+
+### For Developers
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment options including:
+- PyPI publication
+- GitHub Releases
+- Homebrew formula
+- Docker image
+- Local development setup
+
+### Quick Deploy
+
+```bash
+# Build and test
+make build
+make publish-test
+
+# Release to PyPI
+make release VERSION=0.1.0
+```
+
 ## Architecture
 
 The server uses three primary methods to interact with Obsidian:
@@ -307,29 +353,68 @@ This multi-layered approach ensures robust functionality even when Obsidian isn'
 
 ## Development
 
+### Using the Makefile
+
+This project includes a comprehensive Makefile for common tasks:
+
+```bash
+# Setup development environment
+make setup
+
+# Run tests
+make test              # All tests
+make test-unit         # Unit tests only
+make test-coverage     # With coverage report
+
+# Code quality
+make lint              # Run linters
+make format            # Format code
+make check             # Run all checks (lint + test)
+make fix               # Fix auto-fixable issues
+
+# MCP Server installation
+make install-claude    # Configure for Claude Desktop
+make install-kimi      # Configure for Kimi CLI
+make install-local     # Install for local testing
+
+# Release
+make build             # Build distribution
+make publish-test      # Publish to TestPyPI
+make publish           # Publish to PyPI
+make release VERSION=0.1.0  # Full release workflow
+
+# See all available targets
+make help
+```
+
 ### Running Tests
 ```bash
+# Using Makefile
+make test
+
+# Or directly
 uv run pytest
 ```
 
 ### Code Formatting
 ```bash
-uv run ruff format .
-uv run ruff check .
+make format
+# Or: uv run ruff format .
 ```
 
 ### Running Locally
 ```bash
 # With default vault
-OBSIDIAN_DEFAULT_VAULT="My Vault" uv run mcp-apple-obsidian
+OBSIDIAN_DEFAULT_VAULT="My Vault" make run
 
-# Or run directly
-uv run python -m mcp_apple_obsidian.server
+# Or directly
+OBSIDIAN_DEFAULT_VAULT="My Vault" uv run mcp-apple-obsidian
 ```
 
 ### Testing with MCP Inspector
 ```bash
-npx @modelcontextprotocol/inspector uv run mcp-apple-obsidian
+make inspector
+# Or: npx @modelcontextprotocol/inspector uv run mcp-apple-obsidian
 ```
 
 ## License

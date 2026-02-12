@@ -125,22 +125,42 @@ Task parsing in `vault_fs.py`:
 
 ## Testing
 
-The server can be tested using the MCP inspector:
+### Test Suite Overview
+
+**138 tests** covering all 42 tools across 5 test files:
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| `test_import.py` | 9 | Module imports, tool registration |
+| `test_vault_fs.py` | 62 | File system operations with mocked vaults |
+| `test_applescript.py` | 19 | AppleScript with mocked subprocess |
+| `test_uri_handler.py` | 24 | URI building and execution |
+| `test_server_integration.py` | 24 | Full MCP tool integration |
+
+### Running Tests
 
 ```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=mcp_apple_obsidian --cov-report=html
+
+# Run specific file
+uv run pytest tests/test_vault_fs.py -v
+
+# Run with MCP inspector
 npx @modelcontextprotocol/inspector uv run mcp-apple-obsidian
 ```
 
-Or test individual modules:
+### Test Architecture
 
-```bash
-python -c "from mcp_apple_obsidian.vault_fs import list_vaults; print(list_vaults())"
-```
+All tests use proper mocking:
+- **File System**: `tmp_path` + `monkeypatch` for isolated vaults
+- **AppleScript**: `AsyncMock` for subprocess
+- **URI Handler**: Pure function tests + subprocess mocks
 
-Run all tests:
-```bash
-uv run pytest
-```
+See [TESTING.md](TESTING.md) for comprehensive testing documentation.
 
 ## Environment Setup
 
