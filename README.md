@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/banner.png" alt="MCP Apple Obsidian banner" />
+</p>
+
 # MCP Apple Obsidian
 
 A comprehensive Model Context Protocol (MCP) server for Obsidian on macOS. This server provides extensive tools for interacting with Obsidian vaults, notes, and application state through AppleScript, URI schemes, and direct file system access.
