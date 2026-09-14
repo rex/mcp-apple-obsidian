@@ -1,14 +1,21 @@
 name: Add to Rivendell
 
-# Adds every new issue in this repo to the Rivendell project.
+# Adds every new issue in this repo to the Rivendell project and stamps its
+# Cluster, so the board is grouped correctly the moment an issue is opened
+# rather than waiting on triage.
 #
-# This exists instead of the Projects built-in "auto-add" workflow because that
-# is capped per plan (Free: 1 repo, Pro: 5). A plain Action has no such cap, so
-# it scales to the whole estate.
+# This exists instead of the Projects built-in "auto-add" workflow, which is
+# capped per plan (Free: 1 repo, Pro: 5). A plain Action has no such cap.
+#
+# The cluster is baked in rather than looked up: it is a property of the repo,
+# so the repo's own workflow is the right place for it and there is no shared
+# table to drift out of sync.
 #
 # Managed centrally by rex/github-estate -- do not edit here, it will be
 # overwritten. For Gitea-authoritative repos this file lives in Gitea and
 # reaches GitHub via the push-mirror.
+#
+#   cluster: MCP Servers
 
 on:
   issues:
@@ -21,8 +28,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/add-to-project@v1.0.2
+        id: add
         with:
           project-url: https://github.com/users/rex/projects/1
-          # The default GITHUB_TOKEN cannot write to a user-owned project;
-          # this needs a PAT carrying `project` scope.
+          # The default GITHUB_TOKEN cannot write to a user-owned project, and
+          # `project` scope alone cannot read a private repo's issue. Needs both.
           github-token: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
+
+      - name: Set Cluster
+        if: steps.add.outputs.itemId != ''
+        env:
+          GH_TOKEN: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
+          ITEM_ID: ${{ steps.add.outputs.itemId }}
+        run: |
+          gh api graphql \
+            -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){
+              updateProjectV2ItemFieldValue(input:{
+                projectId:$p, itemId:$i, fieldId:$f,
+                value:{singleSelectOptionId:$o}
+              }){ projectV2Item { id } }
+            }' \
+            -F p='PVT_kwHOAEDQys4BjXa4' \
+            -F i="$ITEM_ID" \
+            -F f='PVTSSF_lAHOAEDQys4BjXa4zhiMOiE' \
+            -F o='073e15b3'
