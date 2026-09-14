@@ -1,0 +1,28 @@
+name: Add to Rivendell
+
+# Adds every new issue in this repo to the Rivendell project.
+#
+# This exists instead of the Projects built-in "auto-add" workflow because that
+# is capped per plan (Free: 1 repo, Pro: 5). A plain Action has no such cap, so
+# it scales to the whole estate.
+#
+# Managed centrally by rex/github-estate -- do not edit here, it will be
+# overwritten. For Gitea-authoritative repos this file lives in Gitea and
+# reaches GitHub via the push-mirror.
+
+on:
+  issues:
+    types: [opened, reopened, transferred]
+
+permissions: {}
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/users/rex/projects/1
+          # The default GITHUB_TOKEN cannot write to a user-owned project;
+          # this needs a PAT carrying `project` scope.
+          github-token: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
