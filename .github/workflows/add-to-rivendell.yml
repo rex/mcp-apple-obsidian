@@ -1,5 +1,9 @@
+---
 name: Add to Rivendell
 
+# The leading `---` is for repos that lint every YAML file (ansible-lint's
+# yaml[document-start]). GitHub ignores it.
+#
 # Adds every new issue in this repo to the Rivendell project and stamps its
 # Cluster, so the board is grouped correctly the moment an issue is opened
 # rather than waiting on triage.
@@ -25,7 +29,13 @@ permissions: {}
 
 jobs:
   add-to-project:
-    runs-on: ubuntu-latest
+    # The cheapest GitHub-hosted runner: 1 vCPU in a container, $0.002/min.
+    # Every job bills at least a whole minute and this one takes seconds, so
+    # the per-minute rate is the only lever left.
+    runs-on: ubuntu-slim
+    # A hung API call would hold the job, and the bill, until the timeout:
+    # 360 minutes by default, 15 on ubuntu-slim. Normal runs take seconds.
+    timeout-minutes: 2
     steps:
       - uses: actions/add-to-project@v1.0.2
         id: add
