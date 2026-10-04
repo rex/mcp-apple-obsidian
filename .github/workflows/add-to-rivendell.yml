@@ -15,6 +15,11 @@ name: Add to Rivendell
 # so the repo's own workflow is the right place for it and there is no shared
 # table to drift out of sync.
 #
+# Run by hand (workflow_dispatch) with an issue number, it does the same for an
+# issue that already exists: one filed before this workflow did, which reached
+# the board with no Cluster. `make backfill-cluster` in github-estate finds those
+# and dispatches this for each, so Cluster is still written only here.
+#
 # Managed centrally by rex/github-estate -- do not edit here, it will be
 # overwritten. For Gitea-authoritative repos this file lives in Gitea and
 # reaches GitHub via the push-mirror.
@@ -24,6 +29,12 @@ name: Add to Rivendell
 on:
   issues:
     types: [opened, reopened, transferred]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Number of an existing issue to add to the board and stamp
+        required: true
+        type: number
 
 permissions: {}
 
@@ -37,13 +48,29 @@ jobs:
     # 360 minutes by default, 15 on ubuntu-slim. Normal runs take seconds.
     timeout-minutes: 2
     steps:
-      - uses: actions/add-to-project@v1.0.2
+      # One GraphQL call instead of actions/add-to-project, so a new issue and a
+      # backfilled one take the same path. addProjectV2ItemById returns the
+      # existing item when the issue is already on the board.
+      - name: Add to the project
         id: add
-        with:
-          project-url: https://github.com/users/rex/projects/1
+        env:
           # The default GITHUB_TOKEN cannot write to a user-owned project, and
           # `project` scope alone cannot read a private repo's issue. Needs both.
-          github-token: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
+          GH_TOKEN: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ISSUE_NUMBER: ${{ inputs.issue }}
+        run: |
+          node="${ISSUE_NODE_ID:-$(gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE_NUMBER" --jq .node_id)}"
+          # shellcheck disable=SC2016  # $p and $c are GraphQL variables, not shell ones
+          item=$(gh api graphql \
+            -f query='mutation($p:ID!,$c:ID!){
+              addProjectV2ItemById(input:{projectId:$p, contentId:$c}){ item { id } }
+            }' \
+            -F p='PVT_kwHOAEDQys4BjXa4' \
+            -F c="$node" \
+            --jq .data.addProjectV2ItemById.item.id)
+          [ -n "$item" ] || { echo "::error::addProjectV2ItemById returned no item"; exit 1; }
+          echo "itemId=$item" >> "$GITHUB_OUTPUT"
 
       - name: Set Cluster
         if: steps.add.outputs.itemId != ''
@@ -51,6 +78,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RIVENDELL_PROJECT_TOKEN }}
           ITEM_ID: ${{ steps.add.outputs.itemId }}
         run: |
+          # shellcheck disable=SC2016  # $p, $i, $f and $o are GraphQL variables
           gh api graphql \
             -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){
               updateProjectV2ItemFieldValue(input:{
