@@ -1,6 +1,6 @@
 [project]
 name = "mcp-apple-obsidian"
-version = "0.1.0"
+version = "0.2.0"
 description = "A comprehensive MCP server for Obsidian on macOS with AppleScript, URI scheme, and file system access"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -20,7 +20,7 @@ classifiers = [
 ]
 dependencies = [
     "httpx>=0.28.1",
-    "mcp>=1.26.0",
+    "mcp>=2.3,<3",
     "pyyaml>=6.0",
 ]
 

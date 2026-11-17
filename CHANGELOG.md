@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-11-17 — Agent: Codex
+
+### Changed
+- Migrate to MCP SDK 2.3 with modern discovery and legacy compatibility.
+- Identify the server version and provide compact usage instructions.
+
+### Fixed
+- Surface execution failures as tool errors instead of successful text responses.
+
 ## [Unreleased]
 
 ### Added
